@@ -3,31 +3,35 @@
 /* ---------------------- Opens file in readmode and returns students ---------------------- */
 structStudent *loadStructStudent(int *numberOfStudentsOutput)
 {
-    int numberOfStudents = 0;
+    int numberOfStudents = 0,
+        choose = -1;
     structStudent *result;
     FILE *fileHandle;
-    
-    fileHandle = fopen(userSelectFile(), "r");
+    structfile *fileArray;
 
-    result = (structStudent *)malloc(sizeof(structStudent));  
+    fileArray = userSelectFile(&choose);
+
+    fileHandle = fopen(fileArray[choose].name, "r");
+
+    result = (structStudent *)malloc(sizeof(structStudent));
     while(!feof(fileHandle))
     {
         result = expandStructStudent(result, numberOfStudents + 1);
         result[numberOfStudents++] = loadStudent(fileHandle);
     }
     fclose(fileHandle);
+    free (fileArray);
     *numberOfStudentsOutput = numberOfStudents;
 
     return result;
 }
 /* ---------------------- prompt the user for an class, and returns the input file according to input ---------------------- */
-char *userSelectFile()
+structfile *userSelectFile(int *choose)
 {
-    int count = 0, strLn, choose = -1, condition = 0;
+    int count = 0, strLn, condition = 0;
     DIR *d;
     struct dirent *dir;
     structfile *fileArray;
-    char *result;
 
     fileArray = (structfile *)malloc(sizeof(structfile));
     printf("Your input options are:\n");
@@ -56,15 +60,12 @@ char *userSelectFile()
         {
             printf("Invalid number, choose one between 1 and %d\n :", count);
         }
-        scanf(" %d", &choose);
-        choose--;
-        condition = choose < 0 || choose >= count;
+        scanf(" %d", choose);
+        (*choose)--;
+        condition = *choose < 0 || *choose >= count;
     } while (condition);
 
-    result = fileArray[choose].name;
-    free(fileArray);
-
-    return result;
+    return fileArray;
 }
 
 /* ---------------------- reallocating memory for students, if unsucessful exits program  ---------------------- */
@@ -108,7 +109,7 @@ void initializeRoleStudent(structStudent *tempStruct, char *tempString)
     {
         (*tempStruct).role[i] = FALSE;
     }
-        
+
     for (i = 0; i < strLen; i++)
     {
         if (isdigit(tempString[i]))

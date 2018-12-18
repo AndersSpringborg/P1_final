@@ -51,8 +51,8 @@ void freeAll(structStudent *student, structGroup *groupResult, int amountGroup);
 structStudent *loadStructStudent(int *numberOfStudentsOutput);
 structStudent loadStudent(FILE *fileHandle);
 structStudent *expandStructStudent(structStudent *inputPointer, int size);
-void initializeRoleStudent(structStudent *tempStruct, char *tempString); 
-char *userSelectFile();
+void initializeRoleStudent(structStudent *tempStruct, char *tempString);
+structfile *userSelectFile();
 
 /*  -------------------------------------------------  algoritme -------------------------------------------------  */
 structGroup *algoritme(structStudent *student, int numberOfStudents, int amountGroup);
